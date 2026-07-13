@@ -30,6 +30,7 @@
             font-family: 'Nanum Square Round', 'Malgun Gothic', sans-serif;
             line-height: 1.6;
             overflow-x: hidden;
+            padding-top: 60px;
         }
 
         h1, h2, h3 {
@@ -46,6 +47,45 @@
 
         section {
             margin-bottom: 80px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+            z-index: 1000;
+            /* 초기 상태는 투명 */
+            background-color: transparent; 
+            transition: background-color 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* 스크롤 시 추가될 클래스 (자바스크립트에서 제어) */
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, 0.95); /* 반투명한 흰색 */
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            gap: 40px; /* 메뉴 간격 */
+        }
+
+        .nav-item a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-family: 'Jua', sans-serif;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .nav-item a:hover {
+            color: #F8DE54; /* 마우스 올렸을 때 노란색 */
         }
 
         /* [Intro] 히어로 섹션 */
@@ -240,7 +280,13 @@
     </style>
 </head>
 <body>
-
+    <nav id="navbar" class="navbar">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a href="#">Home</a></li>
+            <li class="nav-item"><a href="#gallery">갤러리</a></li>
+            <li class="nav-item"><a href="#support">간식 후원</a></li>
+        </ul>
+    </nav>
     <!-- [Intro] 히어로 섹션 -->
     <header class="hero">
         <!-- 검정 토이푸들 SVG 일러스트 -->
@@ -358,18 +404,31 @@
             const snackBtn = document.getElementById('snackBtn');
             const kkomiNormal = document.getElementById('kkomiNormal');
             const kkomiHappy = document.getElementById('kkomiHappy');
+            
+            // --- 1. 네브바 요소 가져오기 추가 ---
+            const navbar = document.getElementById('navbar'); 
+
+            // --- 2. 스크롤 시 네브바 배경색 변경 이벤트 추가 ---
+            window.addEventListener('scroll', () => {
+                if (navbar) {
+                    // 스크롤이 위에서부터 50px 이상 내려왔을 때
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled'); // 흰색 배경 클래스 추가
+                    } else {
+                        navbar.classList.remove('scrolled'); // 다시 맨 위로 오면 투명하게 제거
+                    }
+                }
+            });
+            // --- 여기까지 스크롤 이벤트 끝 ---
 
             // 간식 버튼 클릭 이벤트
             snackBtn.addEventListener('click', () => {
-                // 간식을 주면 기분 좋은 표정 일러스트로 교체 (회전 애니메이션 제거)
                 kkomiNormal.classList.remove('active');
                 kkomiHappy.classList.add('active');
                 
-                // 버튼 텍스트 변경으로 반응성 추가
                 const originalText = snackBtn.innerText;
                 snackBtn.innerText = "냠냠! 너무 맛있어왕! 🐶";
                 
-                // 1.5초 뒤에 표정과 버튼 텍스트 원상복구
                 setTimeout(() => {
                     snackBtn.innerText = originalText;
                     kkomiHappy.classList.remove('active');
