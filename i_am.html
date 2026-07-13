@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I AM - 8살 블랙푸들 꼬미</title>
+    <!-- 귀엽고 둥근 느낌의 구글 폰트 적용 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Square+Round&display=swap" rel="stylesheet">
+    <style>
+        /* 기본 설정 및 컬러 팔레트 */
+        :root {
+            --bg-beige: #FFF8E7; /* 포근한 베이지 */
+            --point-yellow: #FCEB88; /* 발랄한 버터 옐로우 */
+            --point-yellow-hover: #F8DE54;
+            --text-dark: #2A2A2A; /* 블랙 꼬미를 연상시키는 차콜 블랙 */
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-beige);
+            color: var(--text-dark);
+            font-family: 'Nanum Square Round', 'Malgun Gothic', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Jua', sans-serif;
+            font-weight: normal;
+        }
+
+        /* 공통 레이아웃 */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        section {
+            margin-bottom: 80px;
+        }
+
+        /* [Intro] 히어로 섹션 */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: linear-gradient(180deg, var(--point-yellow) 0%, var(--bg-beige) 100%);
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            word-break: keep-all;
+            line-height: 1.3;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .hero-img {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid var(--card-bg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* 섹션 타이틀 */
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background-color: var(--point-yellow);
+            z-index: -1;
+            border-radius: 6px;
+        }
+
+        /* [Section 1 & 2] 매력 포인트 카드 (지그재그 레이아웃) */
+        .card {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            gap: 30px;
+        }
+
+        .card.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .card-img {
+            flex: 1;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-content {
+            flex: 1.5;
+        }
+
+        .card-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .card-content p {
+            font-size: 1.1rem;
+            color: #444;
+        }
+
+        /* [Section 3] 간식 타임 (인터랙션) */
+        .interaction-section {
+            text-align: center;
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 50px 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+        }
+
+        .interactive-area {
+            margin: 30px 0;
+        }
+
+        .kkomi-avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            border: 4px solid var(--text-dark);
+            transition: transform 0.3s ease;
+            overflow: hidden; /* 내부 SVG가 삐져나오지 않도록 추가 */
+        }
+
+        .kkomi-svg {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        .kkomi-svg.active {
+            display: block;
+        }
+
+        .btn-snack {
+            background-color: var(--point-yellow);
+            color: var(--text-dark);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-family: 'Jua', sans-serif;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-snack:hover {
+            background-color: var(--point-yellow-hover);
+            transform: translateY(-3px);
+        }
+
+        .btn-snack:active {
+            transform: translateY(1px);
+        }
+
+        /* JS로 제어할 애니메이션 클래스 */
+        .spin-animation {
+            animation: spin 1s cubic-bezier(0.25, 0.1, 0.25, 1); /* 1초 동안 부드럽게 회전 */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(1080deg); } /* 3바퀴 빙글빙글 */
+        }
+
+        /* [Outro] 푸터 */
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: var(--text-dark);
+            color: var(--bg-beige);
+        }
+
+        footer p {
+            font-size: 1.3rem;
+            font-family: 'Jua', sans-serif;
+        }
+
+        .paw {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        /* 반응형 모바일 설정 */
+        @media (max-width: 768px) {
+            .card, .card.reverse {
+                flex-direction: column;
+                text-align: center;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- [Intro] 히어로 섹션 -->
+    <header class="hero">
+        <!-- 검정 토이푸들 SVG 일러스트 -->
+        <svg class="hero-img" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="background-color: #FFF8E7;">
+            <!-- 귀 -->
+            <ellipse cx="50" cy="110" rx="25" ry="45" fill="#1f1f1f" />
+            <ellipse cx="150" cy="110" rx="25" ry="45" fill="#1f1f1f" />
+            <!-- 곱슬곱슬한 털 -->
+            <circle cx="100" cy="80" r="50" fill="#2A2A2A" />
+            <circle cx="65" cy="65" r="30" fill="#2A2A2A" />
+            <circle cx="135" cy="65" r="30" fill="#2A2A2A" />
+            <circle cx="70" cy="100" r="35" fill="#2A2A2A" />
+            <circle cx="130" cy="100" r="35" fill="#2A2A2A" />
+            <!-- 주둥이와 코 -->
+            <circle cx="100" cy="120" r="30" fill="#1a1a1a" />
+            <ellipse cx="100" cy="110" rx="12" ry="8" fill="#000000" />
+            <ellipse cx="97" cy="108" rx="4" ry="2" fill="#444" />
+            <!-- 눈과 반짝임 -->
+            <circle cx="75" cy="95" r="7" fill="#000000" />
+            <circle cx="125" cy="95" r="7" fill="#000000" />
+            <circle cx="73" cy="93" r="2.5" fill="#FFFFFF" />
+            <circle cx="123" cy="93" r="2.5" fill="#FFFFFF" />
+            <!-- 입과 혀 -->
+            <path d="M 90 128 Q 100 135 110 128" stroke="#000000" stroke-width="2" fill="none" />
+            <path d="M 96 130 Q 100 145 104 130 Z" fill="#FF8A8A" />
+            <!-- 발그레한 볼 -->
+            <ellipse cx="65" cy="115" rx="8" ry="5" fill="#FFB6C1" opacity="0.6"/>
+            <ellipse cx="135" cy="115" rx="8" ry="5" fill="#FFB6C1" opacity="0.6"/>
+        </svg>
+        <h1>간식 앞엔 천재견, 산책은 V.I.P!<br>8살 블랙푸들 꼬미 🐾</h1>
+        <p>내 옆에 착붙! 빙글빙글 까만 그림자 꼬미의 하루</p>
+    </header>
+
+    <main class="container">
+        
+        <!-- [Section 1] 껌딱지 일상 -->
+        <section>
+            <h2 class="section-title">껌딱지 모먼트</h2>
+            <div class="card">
+                <div class="card-img">
+                    <!-- 껌딱지 꼬미 SVG 일러스트 (집사 무릎 위 꿀잠) -->
+                    <svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%; display: block; background-color: #FFF2D7;">
+                        <!-- 소파/쿠션 배경 -->
+                        <rect x="50" y="150" width="500" height="250" rx="40" fill="#E8DFD1" />
+                        <rect x="70" y="120" width="460" height="150" rx="30" fill="#D8CFC1" />
+
+                        <!-- 집사의 무릎 (포근한 바지) -->
+                        <path d="M 150 400 Q 300 180 550 400" fill="#8DA6C9" />
+                        <path d="M 200 400 Q 300 230 480 400" fill="#7A93B5" />
+
+                        <!-- 꼬미 몸통 (무릎 위에 둥글게 만 모습) -->
+                        <ellipse cx="340" cy="290" rx="70" ry="50" fill="#2A2A2A" />
+                        <circle cx="380" cy="270" r="40" fill="#2A2A2A" />
+                        <circle cx="290" cy="300" r="45" fill="#2A2A2A" />
+                        <!-- 꼬마 꼬리 -->
+                        <ellipse cx="400" cy="300" rx="15" ry="25" fill="#2A2A2A" transform="rotate(45 400 300)"/>
+
+                        <!-- 꼬미 머리 -->
+                        <circle cx="260" cy="240" r="45" fill="#2A2A2A" />
+                        <circle cx="230" cy="210" r="25" fill="#2A2A2A" />
+                        <circle cx="280" cy="205" r="25" fill="#2A2A2A" />
+                        <circle cx="220" cy="250" r="30" fill="#2A2A2A" />
+                        
+                        <!-- 덮힌 귀 -->
+                        <ellipse cx="220" cy="270" rx="20" ry="35" fill="#1f1f1f" transform="rotate(20 220 270)"/>
+
+                        <!-- 주둥이와 코 (새근새근 자는 모습) -->
+                        <circle cx="235" cy="255" r="22" fill="#1a1a1a" />
+                        <ellipse cx="230" cy="248" rx="8" ry="5" fill="#000000" />
+                        
+                        <!-- 평온하게 감은 눈 -->
+                        <path d="M 255 235 Q 265 240 275 235" stroke="#000000" stroke-width="3" fill="none" stroke-linecap="round" />
+                        
+                        <!-- 볼터치 -->
+                        <ellipse cx="270" cy="250" rx="7" ry="4" fill="#FFB6C1" opacity="0.6"/>
+
+                        <!-- 떠다니는 하트들 -->
+                        <!-- 큰 하트 -->
+                        <path d="M 200 150 A 10 10 0 0 1 220 150 A 10 10 0 0 1 240 150 Q 240 165 220 180 Q 200 165 200 150 Z" fill="#FF8A8A" transform="rotate(-15 220 165)" />
+                        <!-- 작은 핑크 하트 -->
+                        <path d="M 160 180 A 6 6 0 0 1 172 180 A 6 6 0 0 1 184 180 Q 184 189 172 198 Q 160 189 160 180 Z" fill="#FFB6C1" transform="rotate(-30 172 189)" />
+                        <!-- 노란 하트 -->
+                        <path d="M 270 120 A 7 7 0 0 1 284 120 A 7 7 0 0 1 298 120 Q 298 130 284 141 Q 270 130 270 120 Z" fill="#FCEB88" transform="rotate(15 284 130)" />
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>"나의 최애 장소는 네 옆자리"</h3>
+                    <p>혼자 있는 건 절대 싫어! 안방마님 꼬미의 지정석은 언제나 사람 바로 옆입니다. 조용히 다가와 체온을 나누며 누워있는 게 가장 행복한 애교쟁이 껌딱지랍니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- [Section 2] V.I.P 산책 -->
+        <section>
+            <h2 class="section-title">V.I.P 산책 스타일</h2>
+            <div class="card reverse">
+                <div class="card-img">
+                    <svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%; display: block; background-color: #E8F4FA;">
+                        <!-- 청명한 하늘과 뭉게구름 -->
+                        <circle cx="100" cy="80" r="40" fill="#FFFFFF" opacity="0.8"/>
+                        <circle cx="140" cy="70" r="50" fill="#FFFFFF" opacity="0.8"/>
+                        <circle cx="180" cy="90" r="30" fill="#FFFFFF" opacity="0.8"/>
+                        
+                        <circle cx="480" cy="110" r="35" fill="#FFFFFF" opacity="0.8"/>
+                        <circle cx="530" cy="100" r="45" fill="#FFFFFF" opacity="0.8"/>
+                        <circle cx="570" cy="120" r="25" fill="#FFFFFF" opacity="0.8"/>
+
+                        <!-- 바깥 풍경 (지나가는 나무와 수풀) -->
+                        <circle cx="50" cy="400" r="100" fill="#C5E1A5" />
+                        <circle cx="200" cy="420" r="120" fill="#AED581" />
+                        <circle cx="450" cy="410" r="140" fill="#C5E1A5" />
+                        <circle cx="600" cy="400" r="110" fill="#AED581" />
+
+                        <!-- 집사의 몸통과 팔 (포근한 핑크 스웨터) -->
+                        <path d="M 120 400 Q 180 180 400 400" fill="#FFB6B9" />
+
+                        <!-- 꼬미의 VVIP 전용 노란색 슬링백 -->
+                        <path d="M 180 400 C 180 250, 250 200, 400 200 C 440 200, 480 250, 480 300 L 480 400 Z" fill="#FCEB88" stroke="#F8DE54" stroke-width="4"/>
+                        <path d="M 180 220 L 140 100" stroke="#FCEB88" stroke-width="15" stroke-linecap="round" /> <!-- 가방끈 -->
+
+                        <!-- 가방 속 꼬미 몸통 -->
+                        <ellipse cx="340" cy="240" rx="55" ry="40" fill="#2A2A2A" />
+
+                        <!-- 바람을 즐기는 꼬미 머리 -->
+                        <circle cx="340" cy="180" r="45" fill="#2A2A2A" />
+                        <circle cx="300" cy="150" r="30" fill="#2A2A2A" />
+                        <circle cx="370" cy="150" r="30" fill="#2A2A2A" />
+                        <circle cx="305" cy="195" r="35" fill="#2A2A2A" />
+                        <circle cx="375" cy="195" r="35" fill="#2A2A2A" />
+
+                        <!-- 바람에 펄럭이는 귀 -->
+                        <ellipse cx="290" cy="210" rx="20" ry="40" fill="#1f1f1f" transform="rotate(35 290 210)"/>
+                        <ellipse cx="390" cy="210" rx="20" ry="40" fill="#1f1f1f" transform="rotate(-35 390 210)"/>
+
+                        <!-- 주둥이와 코 -->
+                        <circle cx="340" cy="200" r="28" fill="#1a1a1a" />
+                        <ellipse cx="340" cy="190" rx="10" ry="6" fill="#000000" />
+                        
+                        <!-- 기분 좋게 웃는 눈 -->
+                        <path d="M 315 175 Q 322 168 329 175" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" />
+                        <path d="M 351 175 Q 358 168 365 175" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" />
+                        
+                        <!-- 메롱 혀 (행복함) -->
+                        <path d="M 333 210 Q 340 225 347 210 Z" fill="#FF8A8A" />
+                        <!-- 발그레한 볼 -->
+                        <ellipse cx="305" cy="190" rx="8" ry="5" fill="#FFB6C1" opacity="0.7"/>
+                        <ellipse cx="375" cy="190" rx="8" ry="5" fill="#FFB6C1" opacity="0.7"/>
+
+                        <!-- 집사의 손 (가방을 안전하게 받침) -->
+                        <path d="M 230 250 C 270 230, 290 240, 280 270 C 270 290, 230 280, 220 260 Z" fill="#FFE0BD" />
+                        
+                        <!-- 산들바람 효과 선 -->
+                        <path d="M 440 150 L 510 150" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+                        <path d="M 460 170 L 530 170" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+                        <path d="M 430 190 L 480 190" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>"산책은 안겨서 하는 게 제맛"</h3>
+                    <p>내향형 강아지라 내 발로 오래 걷는 건 피곤해요. 하지만 집사 품에 쏙 안겨서 킁킁거리며 바깥 구경을 하는 건 최고로 좋아하죠. 동네에서 제일 편하게 산책하는 V.I.P(Very Important Poodle) 산책러입니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- [Section 3] 간식 타임 (CTA) -->
+        <section class="interaction-section">
+            <h2 class="section-title">간식 타임 매직</h2>
+            <p>평소엔 얌전하지만, 간식만 등장하면 빙글빙글 턴과 완벽한 복종을 보여주는 똑똑한 아인슈타인으로 변신합니다!</p>
+            
+            <div class="interactive-area">
+                <!-- 이미지 태그 대신 두 개의 SVG를 담을 컨테이너로 변경 -->
+                <div class="kkomi-avatar" id="kkomiImage">
+                    <!-- 기본 표정 (기대하는 꼬미) -->
+                    <svg id="kkomiNormal" class="kkomi-svg active" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="background-color: #FFF8E7;">
+                        <!-- 귀 -->
+                        <ellipse cx="50" cy="110" rx="25" ry="45" fill="#1f1f1f" />
+                        <ellipse cx="150" cy="110" rx="25" ry="45" fill="#1f1f1f" />
+                        <!-- 머리 털 -->
+                        <circle cx="100" cy="80" r="50" fill="#2A2A2A" />
+                        <circle cx="65" cy="65" r="30" fill="#2A2A2A" />
+                        <circle cx="135" cy="65" r="30" fill="#2A2A2A" />
+                        <circle cx="70" cy="100" r="35" fill="#2A2A2A" />
+                        <circle cx="130" cy="100" r="35" fill="#2A2A2A" />
+                        <!-- 코 주변 -->
+                        <circle cx="100" cy="120" r="30" fill="#1a1a1a" />
+                        <ellipse cx="100" cy="110" rx="12" ry="8" fill="#000000" />
+                        <!-- 초롱초롱한 눈 (간식 대기 중) -->
+                        <circle cx="75" cy="95" r="8" fill="#000000" />
+                        <circle cx="125" cy="95" r="8" fill="#000000" />
+                        <circle cx="73" cy="92" r="3" fill="#FFFFFF" />
+                        <circle cx="123" cy="92" r="3" fill="#FFFFFF" />
+                        <!-- 앙 다문 입 -->
+                        <path d="M 90 128 Q 100 132 110 128" stroke="#000000" stroke-width="2" fill="none" />
+                    </svg>
+
+                    <!-- 행복한 표정 (간식 먹고 신난 꼬미) -->
+                    <svg id="kkomiHappy" class="kkomi-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="background-color: #FCEB88;">
+                        <!-- 기분 좋아서 살짝 들린 귀 -->
+                        <ellipse cx="40" cy="100" rx="25" ry="45" fill="#1f1f1f" transform="rotate(15 40 100)"/>
+                        <ellipse cx="160" cy="100" rx="25" ry="45" fill="#1f1f1f" transform="rotate(-15 160 100)"/>
+                        <!-- 머리 털 -->
+                        <circle cx="100" cy="80" r="50" fill="#2A2A2A" />
+                        <circle cx="65" cy="65" r="30" fill="#2A2A2A" />
+                        <circle cx="135" cy="65" r="30" fill="#2A2A2A" />
+                        <circle cx="70" cy="100" r="35" fill="#2A2A2A" />
+                        <circle cx="130" cy="100" r="35" fill="#2A2A2A" />
+                        <!-- 코 주변 -->
+                        <circle cx="100" cy="120" r="30" fill="#1a1a1a" />
+                        <ellipse cx="100" cy="110" rx="12" ry="8" fill="#000000" />
+                        <!-- 행복한 눈 (반달눈) -->
+                        <path d="M 65 95 Q 75 85 85 95" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round" />
+                        <path d="M 115 95 Q 125 85 135 95" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round" />
+                        <!-- 크게 벌린 입과 혀 -->
+                        <path d="M 85 125 Q 100 130 115 125" stroke="#000000" stroke-width="2" fill="none" />
+                        <path d="M 90 126 Q 100 150 110 126 Z" fill="#FF8A8A" />
+                        <!-- 반짝이 이펙트 -->
+                        <path d="M 30 50 L 35 60 L 45 65 L 35 70 L 30 80 L 25 70 L 15 65 L 25 60 Z" fill="#FFD700" />
+                        <path d="M 170 40 L 173 48 L 181 50 L 173 52 L 170 60 L 167 52 L 159 50 L 167 48 Z" fill="#FFD700" />
+                        <!-- 발그레한 볼 -->
+                        <ellipse cx="65" cy="115" rx="10" ry="6" fill="#FFB6C1" opacity="0.8"/>
+                        <ellipse cx="135" cy="115" rx="10" ry="6" fill="#FFB6C1" opacity="0.8"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <button class="btn-snack" id="snackBtn">간식 주기 🦴</button>
+        </section>
+
+    </main>
+
+    <!-- [Outro] 푸터 -->
+    <footer>
+        <span class="paw">🐾</span>
+        <p>꼬미가 발도장 꾹! 놀러와 줘서 고마워왕!</p>
+    </footer>
+
+    <!-- 바닐라 자바스크립트 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const snackBtn = document.getElementById('snackBtn');
+            const kkomiNormal = document.getElementById('kkomiNormal');
+            const kkomiHappy = document.getElementById('kkomiHappy');
+
+            // 간식 버튼 클릭 이벤트
+            snackBtn.addEventListener('click', () => {
+                // 간식을 주면 기분 좋은 표정 일러스트로 교체 (회전 애니메이션 제거)
+                kkomiNormal.classList.remove('active');
+                kkomiHappy.classList.add('active');
+                
+                // 버튼 텍스트 변경으로 반응성 추가
+                const originalText = snackBtn.innerText;
+                snackBtn.innerText = "냠냠! 너무 맛있어왕! 🐶";
+                
+                // 1.5초 뒤에 표정과 버튼 텍스트 원상복구
+                setTimeout(() => {
+                    snackBtn.innerText = originalText;
+                    kkomiHappy.classList.remove('active');
+                    kkomiNormal.classList.add('active');
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>
