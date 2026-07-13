@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>꼬미 간식 후원</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Square+Round&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-beige: #FFF8E7;
+            --point-yellow: #FCEB88;
+            --point-yellow-hover: #F8DE54;
+            --text-dark: #2A2A2A;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-beige);
+            color: var(--text-dark);
+            font-family: 'Nanum Square Round', 'Malgun Gothic', sans-serif;
+            line-height: 1.6;
+            padding-top: 100px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Jua', sans-serif;
+            font-weight: normal;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+            z-index: 1000;
+            /* 초기 상태는 투명 */
+            background-color: transparent; 
+            transition: background-color 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* 스크롤 시 추가될 클래스 (자바스크립트에서 제어) */
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, 0.95); /* 반투명한 흰색 */
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            gap: 40px; /* 메뉴 간격 */
+        }
+
+        .nav-item a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-family: 'Jua', sans-serif;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .nav-item a:hover {
+            color: #F8DE54; /* 마우스 올렸을 때 노란색 */
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background-color: var(--point-yellow);
+            z-index: -1;
+            border-radius: 6px;
+        }
+
+        .game-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #E8F0FE;
+            /* 맑은 하늘 배경 */
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border: 4px solid var(--card-bg);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            touch-action: none;
+            /* 모바일에서 캔버스 터치 시 스크롤 방지 */
+        }
+
+        .game-ui {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.5rem;
+            font-family: 'Jua', sans-serif;
+            color: #333;
+            pointer-events: none;
+        }
+
+        .start-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            backdrop-filter: blur(2px);
+        }
+
+        .btn-snack {
+            background-color: var(--point-yellow);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.3rem;
+            font-family: 'Jua', sans-serif;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 15px;
+        }
+
+        .btn-snack:hover {
+            background-color: var(--point-yellow-hover);
+            transform: translateY(-3px);
+        }
+
+        .sponsor-content {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .sponsor-card {
+            flex: 1;
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .sponsor-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .account-box {
+            background-color: #FFF2D7;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.1rem;
+        }
+
+        .sponsor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* 스크롤바 디자인 */
+        .sponsor-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sponsor-list::-webkit-scrollbar-thumb {
+            background: #DDD;
+            border-radius: 3px;
+        }
+
+        .list-item {
+            background: #F9F9F9;
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.2s;
+        }
+
+        .list-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .item-avatar {
+            font-size: 2rem;
+        }
+
+        .item-info h4 {
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .item-info p {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .sponsor-content {
+                flex-direction: column;
+            }
+
+            .sponsor-card {
+                width: 100%;
+            }
+
+            .navbar-nav {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="navbar" class="navbar">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a href="i_am.html">Home</a></li>
+            <li class="nav-item"><a href="gallery.html">갤러리</a></li>
+            <li class="nav-item"><a href="donation.html" style="color: #F8DE54;">간식 후원</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <section class="game-section">
+            <h2 class="section-title">간식 던져주기 미니게임</h2>
+            <p style="margin-bottom: 20px; color: #555;">마우스(또는 터치)로 꼬미를 움직여 20초 동안 떨어지는 간식을 받아주세요!</p>
+
+            <div id="game-container">
+                <div class="game-ui">
+                    <span>점수: <span id="scoreDisplay">0</span></span>
+                    <span>⏱️ <span id="timeDisplay">20</span>초</span>
+                </div>
+                <!-- 캔버스 내부 비율은 600x400으로 고정, 화면 크기에 맞게 CSS로 축소됨 -->
+                <canvas id="gameCanvas" width="600" height="400"></canvas>
+
+                <div id="startOverlay" class="start-overlay">
+                    <h3 style="font-size: 2rem; margin-bottom: 10px;">하늘에서 간식이 빗발친다!</h3>
+                    <p>준비가 되면 아래 버튼을 눌러주세요.</p>
+                    <button class="btn-snack" onclick="startGame()">게임 시작 🐾</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="sponsor-content">
+            <!-- 왼쪽: 후원 방법 -->
+            <div class="sponsor-card">
+                <h3>💌 꼬미 간식 창고 채우기</h3>
+                <p>꼬미의 까다로운 입맛을 만족시킬 특식 기금!<br>따뜻한 마음 한 스푼이 꼬미를 춤추게 합니다.</p>
+                <div class="account-box">
+                    <strong>국민은행 123456-78-901234</strong><br>
+                    <span style="font-size: 0.95rem; color: #666;">예금주: 꼬미집사</span>
+                </div>
+                <button class="btn-snack" style="width: 100%;" onclick="copyAccount(this)">계좌번호 복사하기 📋</button>
+            </div>
+
+            <!-- 오른쪽: 후원 명단 -->
+            <div class="sponsor-card">
+                <h3>💖 명예의 전당 (후원 명단)</h3>
+                <div class="sponsor-list">
+                    <div class="list-item">
+                        <div class="item-avatar">🐶</div>
+                        <div class="item-info">
+                            <h4>동네 강아지 친구</h4>
+                            <p>"꼬미야 맛있는 거 많이 먹고 건강해!"</p>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="item-avatar">👨‍💻</div>
+                        <div class="item-info">
+                            <h4>랜선 삼촌</h4>
+                            <p>"빙글빙글 댄스 너무 귀여워서 후원합니다."</p>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="item-avatar">🐈</div>
+                        <div class="item-info">
+                            <h4>옆집 고양이</h4>
+                            <p>"우리 집사 몰래 주는 거다냥."</p>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="item-avatar">🍖</div>
+                        <div class="item-info">
+                            <h4>익명의 간식요정</h4>
+                            <p>"꼬미가 소고기를 좋아한다는 소문을 듣고..."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer
+        style="text-align: center; padding: 60px 20px; margin-top: 60px; background-color: var(--text-dark); color: var(--bg-beige);">
+        <span style="font-size: 2rem; display: inline-block; margin-bottom: 10px;">🐾</span>
+        <p style="font-size: 1.3rem; font-family: 'Jua', sans-serif;">오늘도 꼬미와 함께해주셔서 감사합니다!</p>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', function () {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        function copyAccount(btn) {
+            // 호환성을 위해 textarea를 생성하여 복사하는 방식 사용
+            const textarea = document.createElement('textarea');
+            textarea.value = '국민은행 123456-78-901234';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const originalText = btn.innerText;
+            btn.innerText = '복사 완료! 감사합니다 🐾';
+            btn.style.backgroundColor = '#A8D0E6';
+
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.backgroundColor = '';
+            }, 2000);
+        }
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let animationId;
+        let gameActive = false;
+        let score = 0;
+        let timeLeft = 20;
+        let lastTime = 0;
+        let kkomiX = canvas.width / 2;
+        let snacks = [];
+
+        // 마우스 및 터치로 꼬미 이동시키기
+        function updatePosition(clientX) {
+            const rect = canvas.getBoundingClientRect();
+            // 실제 표시되는 캔버스 크기와 내부 해상도(600)의 비율 계산
+            const scaleX = canvas.width / rect.width;
+            kkomiX = (clientX - rect.left) * scaleX;
+
+            // 화면 밖으로 나가지 않게 제한
+            if (kkomiX < 30) kkomiX = 30;
+            if (kkomiX > canvas.width - 30) kkomiX = canvas.width - 30;
+        }
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (gameActive) updatePosition(e.clientX);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (gameActive) {
+                e.preventDefault(); // 스크롤 방지
+                updatePosition(e.touches[0].clientX);
+            }
+        }, { passive: false });
+
+        function drawKkomi() {
+            // 꼬미 얼굴 (검정색 원)
+            ctx.fillStyle = '#2A2A2A';
+            ctx.beginPath();
+            ctx.arc(kkomiX, canvas.height - 40, 30, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 귀 (양쪽 타원)
+            ctx.beginPath();
+            ctx.ellipse(kkomiX - 30, canvas.height - 25, 15, 25, -Math.PI / 6, 0, Math.PI * 2);
+            ctx.ellipse(kkomiX + 30, canvas.height - 25, 15, 25, Math.PI / 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 눈 (흰자 + 검은자)
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(kkomiX - 12, canvas.height - 45, 6, 0, Math.PI * 2);
+            ctx.arc(kkomiX + 12, canvas.height - 45, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(kkomiX - 12, canvas.height - 45, 3, 0, Math.PI * 2);
+            ctx.arc(kkomiX + 12, canvas.height - 45, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 코
+            ctx.fillStyle = '#111';
+            ctx.beginPath();
+            ctx.arc(kkomiX, canvas.height - 32, 5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function spawnSnack() {
+            // 5% 확률로 매 프레임마다 간식 생성
+            if (Math.random() < 0.05) {
+                snacks.push({
+                    x: Math.random() * (canvas.width - 40) + 20,
+                    y: -20,
+                    speed: Math.random() * 3 + 2,
+                    type: Math.random() > 0.5 ? '🦴' : '🍖'
+                });
+            }
+        }
+
+        function updateGame() {
+            if (!gameActive) return;
+
+            // 1초마다 타이머 감소
+            const now = Date.now();
+            if (now - lastTime > 1000) {
+                timeLeft--;
+                lastTime = now;
+                document.getElementById('timeDisplay').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    endGame();
+                    return;
+                }
+            }
+
+            // 화면 초기화
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 꼬미와 간식 그리기
+            drawKkomi();
+            spawnSnack();
+
+            // 간식 떨어지는 로직 및 꼬미와 부딪혔는지 검사
+            for (let i = snacks.length - 1; i >= 0; i--) {
+                let s = snacks[i];
+                s.y += s.speed;
+
+                ctx.font = '30px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(s.type, s.x, s.y);
+
+                // 충돌 검사 (간식이 꼬미 입 주변에 닿았는지 확인)
+                if (s.y > canvas.height - 70 && s.y < canvas.height - 10 && Math.abs(s.x - kkomiX) < 40) {
+                    score++;
+                    document.getElementById('scoreDisplay').innerText = score;
+                    snacks.splice(i, 1); // 먹은 간식 제거
+                } else if (s.y > canvas.height + 20) {
+                    snacks.splice(i, 1); // 바닥에 떨어진 간식 제거
+                }
+            }
+
+            animationId = requestAnimationFrame(updateGame);
+        }
+
+        function startGame() {
+            score = 0;
+            timeLeft = 20;
+            snacks = [];
+            gameActive = true;
+            lastTime = Date.now();
+
+            document.getElementById('scoreDisplay').innerText = score;
+            document.getElementById('timeDisplay').innerText = timeLeft;
+            document.getElementById('startOverlay').style.display = 'none';
+
+            if (animationId) cancelAnimationFrame(animationId);
+            updateGame();
+        }
+
+        function endGame() {
+            gameActive = false;
+            document.getElementById('startOverlay').style.display = 'flex';
+            document.getElementById('startOverlay').innerHTML = `
+                <h3 style="font-size: 2rem; margin-bottom: 10px; color: var(--text-dark);">게임 종료!</h3>
+                <p style="font-size: 1.2rem; margin-bottom: 20px;">꼬미가 간식을 <strong>${score}개</strong>나 먹었어요! 🐶</p>
+                <button class="btn-snack" onclick="startGame()">다시 던져주기</button>
+            `;
+        }
+
+        // 초기 화면에 정지해 있는 꼬미 그려두기
+        drawKkomi();
+    </script>
+</body>
+
+</html>
